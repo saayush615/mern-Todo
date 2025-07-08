@@ -7,15 +7,23 @@ function App() {
   const[ todos, setTodos ] = useState([])
   const [editingTodo, setEditingTodo] = useState(null)
 
-  const addTodo = (task) => { 
-    const newTodo = {
-      id : Date.now(),
-      task: task,
-      completed: false
-    }
-
+const addTodo = async (task) => { 
+  try {
+    const response = await fetch('http://localhost:3000/todos/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ task })
+    });
+    if (!response.ok) throw new Error('Failed to add todo');
+    const newTodo = await response.json();
     setTodos([...todos, newTodo]);
-   }
+  } catch (error) {
+    console.error(error);
+    // Optionally show error to user
+  }
+}
 
   const ToggleTodo = (id) => { 
     const newTodo = todos.map((todo) => ( todo.id === id ? { ...todo, completed: !todo.completed } : todo));

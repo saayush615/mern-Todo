@@ -1,0 +1,10 @@
+{
+  "name": "mern-todo",
+  "scripts": {
+    "dev": "concurrently \"npm --prefix backend start\" \"npm --prefix frontend run dev\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.0"
+  }
+}
+
