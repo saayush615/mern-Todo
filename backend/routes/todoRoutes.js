@@ -5,8 +5,7 @@ const Todo = require('../models/Todo');
 router.post('/', async (req,res) => { 
     try{
         const todo = new Todo({
-            title: req.body.title,
-            desc: req.body.desc
+            task: req.body.task
         });
         const todos = await todo.save();
         res.status(201).json(todos);
@@ -23,12 +22,16 @@ router.get('/', async (req,res) => {
     }
  });
  router.put('/:id', async (req,res) => { 
+    const { id } = req.params;
+    const { isCompleted } = req.body;
+
     try{
-        const todo = await Todo.findById(req.params.id);
-        todo.title = req.body.title;    
-        todo.desc = req.body.desc;
-        todo.isCompleted = req.body.isCompleted;
-        const updateTodo = await todo.save();
+        const updateTodo = await Todo.findByIdAndUpdate(
+            id,
+            { isCompleted },
+            { new: true }
+        );
+        
         res.status(201).json(updateTodo);
     }catch(err){
         res.status(400).json({message: err.message});

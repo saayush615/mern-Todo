@@ -11,14 +11,14 @@ const TodoList = ({ todos, ToggleTodo, deleteTodo, startEditing }) => {
     <div className='bg-[#ecedf6] p-4 rounded-xl'>
         <ul>
         {todos.map((todo) => (
-            <div key={todo.id} className='bg-white mb-4 p-5 flex justify-between'>
+            <div key={todo._id} className='bg-white mb-4 p-5 flex justify-between'>
               <div className='flex gap-4'>
-                <input type="checkbox" checked={todo.completed} onChange={() => { ToggleTodo(todo.id) }} className="h-5 w-5 accent-[#646ff0] rounded border-gray-300 cursor-pointer"  />
-                <li className={todo.completed ? 'line-through' : ''}>{todo.task}</li>
+                <input type="checkbox" checked={todo.isCompleted} onChange={() => { ToggleTodo(todo._id) }} className="h-5 w-5 accent-[#646ff0] rounded border-gray-300 cursor-pointer"  />
+                <li className={todo.isCompleted ? 'line-through' : ''}>{todo.task}</li>
               </div>
               <div className='flex gap-4'>
                 <img src={editIcon} alt="edit button" className='w-6 h-auto cursor-pointer' onClick={() => { startEditing(todo) }} />
-                <img src={deleteIcon} alt="delete button" className='w-6 h-auto cursor-pointer' onClick={() => { deleteTodo(todo.id) }}  />
+                <img src={deleteIcon} alt="delete button" className='w-6 h-auto cursor-pointer' onClick={() => { deleteTodo(todo._id) }}  />
               </div>
             </div>
           ))

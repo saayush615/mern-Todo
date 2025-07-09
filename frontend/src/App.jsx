@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import TodoForm from './components/TodoForm'
 import TodoList from './components/TodoList'
@@ -6,6 +6,17 @@ import TodoList from './components/TodoList'
 function App() {
   const[ todos, setTodos ] = useState([])
   const [editingTodo, setEditingTodo] = useState(null)
+
+  // useEffect to fetch data when component mounts
+  useEffect(() => {
+    fetch('http://localhost:3000/todos/')
+    .then(res => res.json())
+    .then(data => {
+      setTodos(data)
+    })
+    .catch(err => console.error('Failed to fetch task:',err));
+  }, []) // <- empty dependency array means run once on mount
+  
 
 const addTodo = async (task) => { 
   try {
@@ -21,18 +32,48 @@ const addTodo = async (task) => {
     setTodos([...todos, newTodo]);
   } catch (error) {
     console.error(error);
-    // Optionally show error to user
   }
 }
 
-  const ToggleTodo = (id) => { 
-    const newTodo = todos.map((todo) => ( todo.id === id ? { ...todo, completed: !todo.completed } : todo));
-    setTodos(newTodo);
+  const ToggleTodo = async (id) => { 
+    try {
+      const todoToToggle = todos.find((todo) => todo._id === id);
+      if(!todoToToggle) return;
+
+      //Put request
+      const response = await fetch(`http://localhost:3000/todos/${id}`,{
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ isCompleted: !todoToToggle.isCompleted})
+      });
+
+      if (!response.ok) throw new Error('Failed to update todo');
+      const updatedTodo = await response.json();
+
+      // Update local state
+      const newTodos = todos.map((todo) =>
+        todo._id === id ? updatedTodo : todo
+      );
+      setTodos(newTodos);
+    } catch (error) {
+      console.error(error);
+    }
    }
 
-   const deleteTodo = (id) => { 
-    const updatedTodo = todos.filter((todo) => ( todo.id !== id ));
-    setTodos(updatedTodo);
+   const deleteTodo = async (id) => { 
+    try {
+      const response = await fetch(`http://localhost:3000/todos/${id}`,{
+        method: 'DELETE',
+      });
+      if(!response.ok) throw new Error('Failed to delete todo');
+
+      const updatedTodo = todos.filter((todo) => ( todo._id !== id ));
+      setTodos(updatedTodo);
+    } catch (error) {
+      console.error(error);
+    }
     }
 
     const startEditing = (todo) => { 
