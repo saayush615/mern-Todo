@@ -6,8 +6,7 @@ router.post('/', async (req,res) => {
     try{
         const todo = new Todo({
             title: req.body.title,
-            desc: req.body.desc,
-            dueDate: req.body.dueDate 
+            desc: req.body.desc
         });
         const todos = await todo.save();
         res.status(201).json(todos);
@@ -28,7 +27,6 @@ router.get('/', async (req,res) => {
         const todo = await Todo.findById(req.params.id);
         todo.title = req.body.title;    
         todo.desc = req.body.desc;
-        todo.dueDate = req.body.dueDate;
         todo.isCompleted = req.body.isCompleted;
         const updateTodo = await todo.save();
         res.status(201).json(updateTodo);
