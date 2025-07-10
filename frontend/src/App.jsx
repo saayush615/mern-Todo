@@ -80,11 +80,27 @@ const addTodo = async (task) => {
       setEditingTodo(todo);
      }
 
-     const editTodo = (id,task) => { 
-      const updatedTodo = todos.map((todo) => (todo.id === id? {...todo,task: task} : todo))
-      setTodos(updatedTodo);
-      setEditingTodo(null);
+    const editTodo = async (id, task) => { 
+      try {
+        const response = await fetch(`http://localhost:3000/todos/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ task }) // send updated task
+        });
+        if (!response.ok) throw new Error('Failed to edit');
+
+        const updatedTodo = await response.json();
+        const newTodos = todos.map((todo) =>
+          todo._id === id ? updatedTodo : todo
+        );
+        setTodos(newTodos);
+        setEditingTodo(null);
+      } catch (error) {
+        console.error(error);
       }
+    }
 
   return (
     <>

@@ -17,7 +17,7 @@ const TodoForm = ({ addTodo, editingTodo, editTodo }) => {
     const handleSubmit = (e) => { 
         e.preventDefault();
         if (task.trim()) {
-            editingTodo? editTodo(editingTodo.id,task) : addTodo(task);
+            editingTodo? editTodo(editingTodo._id,task) : addTodo(task);
         }
         setTask('')
      }
